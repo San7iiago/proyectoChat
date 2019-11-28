@@ -40,7 +40,7 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
+        setContentView(R.layout.activity_login);
 
         volley = VolleyRP.getInstance(this);
         mRequest = volley.getRequestQueue();
@@ -88,10 +88,16 @@ public class Login extends AppCompatActivity {
                 String contraseña = Jsondatos.getString("Password");
                 if(usuario.equals(USER) && contraseña.equals(PASSWORD)){
                     String Token =FirebaseInstanceId.getInstance().getToken();
+
                     if(Token!=null){
-                        JSONObject js = new JSONObject(Token);//SOLO SI LES APARECE {"token":"...."}
-                        String tokenRecortado = js.getString("token");
-                        SubirToken(tokenRecortado);
+                        if ((""+Token.charAt(0)).equalsIgnoreCase("{")){
+                            JSONObject js = new JSONObject(Token);//SOLO SI LES APARECE {"token":"...."}
+                            String tokenRecortado = js.getString("token");
+                            SubirToken(tokenRecortado);
+                        } else {
+                            SubirToken(Token);
+                        }
+
                     }
                     else Toast.makeText(this,"El token es nulo",Toast.LENGTH_SHORT).show();
                 }
@@ -99,7 +105,9 @@ public class Login extends AppCompatActivity {
             }else{
                 Toast.makeText(this,estado,Toast.LENGTH_SHORT).show();
             }
-        } catch (JSONException e) {}
+        } catch (JSONException e) {
+
+        }
     }
 
     private void SubirToken(String token){
