@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -21,36 +20,27 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-import com.example.chatPasto.ActividadDeUsuarios.ActivityUsuarios;
-import com.example.chatPasto.Internet.SolicitudesJson;
+import com.example.chatPasto.Mensajes.Mensajeria;
 
 public class Login extends AppCompatActivity {
 
     private EditText eTusuario;
     private EditText eTcontraseña;
     private Button bTingresar;
-    private Button registro;
-
-    private RadioButton RBsesion;
 
     private VolleyRP volley;
     private RequestQueue mRequest;
 
     private static final String IP = "https://androidchatpastuso.000webhostapp.com/ArchivosPHP/Login_GETID.php?id=";
+    private static final String IP_TOKEN = "https://androidchatpastuso.000webhostapp.com/ArchivosPHP/Token_INSERTandUPDATE.php";
 
     private String USER = "";
     private String PASSWORD = "";
 
-    private boolean isActivateRadioButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-
-        if(Preferences.obtenerPreferenceBoolean(this,Preferences.PREFERENCE_ESTADO_BUTTON_SESION)){
-            iniciarActividadSiguiente();
-        }
+        setContentView(R.layout.activity_chat);
 
         volley = VolleyRP.getInstance(this);
         mRequest = volley.getRequestQueue();
@@ -59,35 +49,11 @@ public class Login extends AppCompatActivity {
         eTcontraseña = (EditText) findViewById(R.id.eTcontraseña);
 
         bTingresar = (Button) findViewById(R.id.bTingresar);
-        registro = (Button) findViewById(R.id.registrar);
-
-        RBsesion = (RadioButton) findViewById(R.id.RBSecion);
-
-        isActivateRadioButton = RBsesion.isChecked(); //DESACTIVADO
-
-        RBsesion.setOnClickListener(new View.OnClickListener() {
-            //ACTIVADO
-            @Override
-            public void onClick(View v) {
-                if(isActivateRadioButton){
-                    RBsesion.setChecked(false);
-                }
-                isActivateRadioButton = RBsesion.isChecked();
-            }
-        });
 
         bTingresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 VerificarLogin(eTusuario.getText().toString().toLowerCase(),eTcontraseña.getText().toString().toLowerCase());
-            }
-        });
-
-        registro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(Login.this,Registro.class);
-                startActivity(i);
             }
         });
     }
@@ -118,19 +84,14 @@ public class Login extends AppCompatActivity {
             String estado = datos.getString("resultado");
             if(estado.equals("CC")){
                 JSONObject Jsondatos = new JSONObject(datos.getString("datos"));
-                String usuario = Jsondatos.getString("id").toLowerCase();
-                String contraseña = Jsondatos.getString("Password").toLowerCase();
+                String usuario = Jsondatos.getString("id");
+                String contraseña = Jsondatos.getString("Password");
                 if(usuario.equals(USER) && contraseña.equals(PASSWORD)){
-                    Preferences.savePreferenceString(Login.this,Jsondatos.getString("id"),Preferences.PREFERENCE_USUARIO_LOGIN);
                     String Token =FirebaseInstanceId.getInstance().getToken();
                     if(Token!=null){
-                        if((""+Token.charAt(0)).equalsIgnoreCase("{")) {
-                            JSONObject js = new JSONObject(Token);//SOLO SI LES APARECE {"token":"...."} o "asdasdas"
-                            String tokenRecortado = js.getString("token");
-                            SubirToken(tokenRecortado);
-                        }else{
-                            SubirToken(Token);
-                        }
+                        JSONObject js = new JSONObject(Token);//SOLO SI LES APARECE {"token":"...."}
+                        String tokenRecortado = js.getString("token");
+                        SubirToken(tokenRecortado);
                     }
                     else Toast.makeText(this,"El token es nulo",Toast.LENGTH_SHORT).show();
                 }
@@ -138,9 +99,7 @@ public class Login extends AppCompatActivity {
             }else{
                 Toast.makeText(this,estado,Toast.LENGTH_SHORT).show();
             }
-        } catch (JSONException e) {
-            Toast.makeText(this, "El token no se pudo recortar", Toast.LENGTH_SHORT).show();
-        }
+        } catch (JSONException e) {}
     }
 
     private void SubirToken(String token){
@@ -148,14 +107,15 @@ public class Login extends AppCompatActivity {
         hashMapToken.put("id",USER);
         hashMapToken.put("token",token);
 
-        JsonObjectRequest solicitud = new JsonObjectRequest(Request.Method.POST, SolicitudesJson.IP_TOKEN_UPLOAD,new JSONObject(hashMapToken), new Response.Listener<JSONObject>(){
+        JsonObjectRequest solicitud = new JsonObjectRequest(Request.Method.POST,IP_TOKEN,new JSONObject(hashMapToken), new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject datos) {
-                Preferences.savePreferenceBoolean(Login.this,RBsesion.isChecked(),Preferences.PREFERENCE_ESTADO_BUTTON_SESION);
                 try {
                     Toast.makeText(Login.this,datos.getString("resultado"),Toast.LENGTH_SHORT).show();
                 } catch (JSONException e){}
-                iniciarActividadSiguiente();
+                Intent i = new Intent(Login.this,Mensajeria.class);
+                i.putExtra("key_emisor",USER);
+                startActivity(i);
             }
         },new Response.ErrorListener(){
             @Override
@@ -164,12 +124,6 @@ public class Login extends AppCompatActivity {
             }
         });
         VolleyRP.addToQueue(solicitud,mRequest,this,volley);
-    }
-
-    public void iniciarActividadSiguiente(){
-        Intent i = new Intent(Login.this, ActivityUsuarios.class);
-        startActivity(i);
-        finish();
     }
 
 }

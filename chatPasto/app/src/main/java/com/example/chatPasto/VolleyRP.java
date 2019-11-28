@@ -1,6 +1,7 @@
 package com.example.chatPasto;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -22,7 +23,6 @@ public class VolleyRP {
         }
         return mVolleyRP;
     }
-
 
     public RequestQueue getRequestQueue() {
         return mRequestQueue;

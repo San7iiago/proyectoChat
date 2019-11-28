@@ -53,7 +53,7 @@ public class MensajeriaAdapter extends RecyclerView.Adapter<MensajeriaAdapter.Me
             holder.TvMensaje.setGravity(Gravity.RIGHT);
         }else if(mensajeDeTextos.get(position).getTipoMensaje()==2){//RECEPTOR
             holder.mensajeBG.setBackgroundResource(R.drawable.out_message_bg);
-            rl.addRule(0,RelativeLayout.ALIGN_PARENT_RIGHT);
+            rl.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,0);
             rl.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             llMensaje.gravity = Gravity.LEFT;
             llHora.gravity = Gravity.LEFT;
@@ -70,6 +70,9 @@ public class MensajeriaAdapter extends RecyclerView.Adapter<MensajeriaAdapter.Me
         holder.TvHora.setText(mensajeDeTextos.get(position).getHoraDelMensaje());
         if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) holder.cardView.getBackground().setAlpha(0);
         else holder.cardView.setBackgroundColor(ContextCompat.getColor(context,android.R.color.transparent));
+
+
+
     }
 
     @Override

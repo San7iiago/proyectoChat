@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,7 +21,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,8 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.example.chatPasto.Preferences;
-import com.example.chatPasto.Internet.SolicitudesJson;
 import com.example.chatPasto.R;
 import com.example.chatPasto.VolleyRP;
 
@@ -44,6 +40,7 @@ public class Mensajeria extends AppCompatActivity {
     private RecyclerView rv;
     private Button bTEnviarMensaje;
     private EditText eTEscribirMensaje;
+    private EditText eTRECEPTOR;
     private List<MensajeDeTexto> mensajeDeTextos;
     private MensajeriaAdapter adapter;
 
@@ -51,7 +48,7 @@ public class Mensajeria extends AppCompatActivity {
     private String EMISOR = "";
     private String RECEPTOR;
 
-    private static final String IP_MENSAJE = "http://kevinandroidkap.pe.hu/ArchivosPHP/Enviar_Mensajes.php";
+    private static final String IP_MENSAJE = "https://androidchatpastuso.000webhostapp.com/ArchivosPHP/Enviar_Mensajes.php";
 
     private VolleyRP volley;
     private RequestQueue mRequest;
@@ -59,25 +56,25 @@ public class Mensajeria extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mensajes);
+        setContentView(R.layout.mensajeria);
         mensajeDeTextos = new ArrayList<>();
 
-        EMISOR = Preferences.obtenerPreferenceString(this, Preferences.PREFERENCE_USUARIO_LOGIN);
-        Intent i = getIntent();
-        Bundle bundle = i.getExtras();
-        if (bundle != null) {
-            RECEPTOR = bundle.getString("key_receptor");//
+        Intent extras = getIntent();
+        Bundle bundle = extras.getExtras();
+        if(bundle!=null){
+            EMISOR = bundle.getString("key_emisor");
         }
-
         volley = VolleyRP.getInstance(this);
         mRequest = volley.getRequestQueue();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         bTEnviarMensaje = (Button) findViewById(R.id.bTenviarMensaje);
         eTEscribirMensaje = (EditText) findViewById(R.id.eTEsribirMensaje);
+        eTRECEPTOR = (EditText) findViewById(R.id.receptorET);
 
         rv = (RecyclerView) findViewById(R.id.rvMensajes);
         LinearLayoutManager lm = new LinearLayoutManager(this);
+        lm.setStackFromEnd(true);
         rv.setLayoutManager(lm);
 
         adapter = new MensajeriaAdapter(mensajeDeTextos,this);
@@ -86,7 +83,8 @@ public class Mensajeria extends AppCompatActivity {
         bTEnviarMensaje.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String mensaje = eTEscribirMensaje.getText().toString().trim();//"   hola  " => "hola"
+                String mensaje = eTEscribirMensaje.getText().toString();
+                RECEPTOR = eTRECEPTOR.getText().toString();
                 if(!mensaje.isEmpty() && !RECEPTOR.isEmpty()){
                     MENSAJE_ENVIAR = mensaje;
                     MandarMensaje();
@@ -95,25 +93,6 @@ public class Mensajeria extends AppCompatActivity {
                 }
             }
         });
-
-        eTEscribirMensaje.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                rv.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).isActive()){
-                            setScrollbarChat();
-                        }else{
-                            rv.postDelayed(this,100);
-                        }
-                    }
-                },100);
-
-            }
-        });
-
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,41 +108,9 @@ public class Mensajeria extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 String mensaje = intent.getStringExtra("key_mensaje");
                 String hora = intent.getStringExtra("key_hora");
-                String horaParametros[] = hora.split("\\,");
-                String emisor = intent.getStringExtra("key_emisor_PHP");//xD
-                if(emisor.equals(RECEPTOR)){
-                    CreateMensaje(mensaje,horaParametros[0],2);
-                }
+                CreateMensaje(mensaje,hora,2);
             }
         };
-
-        SolicitudesJson s = new SolicitudesJson() {
-            @Override
-            public void solicitudCompletada(JSONObject j) {
-                try {
-                    JSONArray js = j.getJSONArray("resultado");
-                    for(int i=0;i<js.length();i++){
-                        JSONObject jo = js.getJSONObject(i);
-                        String menasje = jo.getString("mensaje");
-                        String hora = jo.getString("hora_del_mensaje").split(",")[0];
-                        int tipoMenasje = jo.getInt("tipo_mensaje");
-                        CreateMensaje(menasje,hora,tipoMenasje);
-                    }
-
-                } catch (JSONException e) {
-                    Toast.makeText(Mensajeria.this, "Ocurrio un error al descomprimir los mensajes", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void solicitudErronea() {
-
-            }
-        };
-        HashMap<String,String> hs = new HashMap<>();
-        hs.put("emisor",EMISOR);
-        hs.put("receptor",RECEPTOR);
-        s.solicitudJsonPOST(this,SolicitudesJson.URL_GET_ALL_MENSAJES_USUARIO,hs);
 
     }
 

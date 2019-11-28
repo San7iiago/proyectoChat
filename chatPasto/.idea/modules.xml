@@ -4,8 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MiChatTimeReal-master.iml" filepath="$PROJECT_DIR$/MiChatTimeReal-master.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/chatPasto.iml" filepath="$PROJECT_DIR$/chatPasto.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/chatPasto-app.iml" filepath="$PROJECT_DIR$/app/chatPasto-app.iml" />
     </modules>
   </component>
 </project>

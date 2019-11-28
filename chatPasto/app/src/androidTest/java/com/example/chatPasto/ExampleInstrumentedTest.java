@@ -16,6 +16,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("pe.yt.com.piazzoli.kevin.michattimereal", appContext.getPackageName());
+        assertEquals("com.example.chatPasto", appContext.getPackageName());
     }
 }
