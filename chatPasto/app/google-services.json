@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "302919173879",
+    "firebase_url": "https://chat-pasto.firebaseio.com",
+    "project_id": "chat-pasto",
+    "storage_bucket": "chat-pasto.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:302919173879:android:9b8e770245b99bbdb875f2",
+        "android_client_info": {
+          "package_name": "com.example.kevin.chatPasto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "302919173879-90ieak81mjaevc2tpkc5ituoehgrinfp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCO-qrvdU90OYtFIk-iKXtMa2UvJfwJgxs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "302919173879-90ieak81mjaevc2tpkc5ituoehgrinfp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
