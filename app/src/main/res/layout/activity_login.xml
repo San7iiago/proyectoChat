@@ -58,6 +58,11 @@
             android:textColor="#2d3436"
             android:inputType="textPassword"
             />
+        <RadioButton
+            android:id="@+id/RBSecion"
+            android:hint="No Cerrar Sesión"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         <Button
             android:id="@+id/bTingresar"
             android:layout_width="match_parent"
@@ -68,7 +73,7 @@
             android:background="@color/colorBtnSignIn"/>
 
         <Button
-            android:id="@+id/SSignUp"
+            android:id="@+id/registrar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sign Up"

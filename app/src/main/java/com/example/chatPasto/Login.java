@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -13,6 +14,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.chatPasto.ActividadDeUsuarios.ActivityUsuarios;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
@@ -27,6 +29,10 @@ public class Login extends AppCompatActivity {
     private EditText eTusuario;
     private EditText eTcontraseña;
     private Button bTingresar;
+    private Button registro;
+
+    private RadioButton RBsesion;
+    private boolean isActivateRadioButton;
 
     private VolleyRP volley;
     private RequestQueue mRequest;
@@ -42,6 +48,10 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        if(Preferences.obtenerPreferenceBoolean(this,Preferences.PREFERENCE_ESTADO_BUTTON_SESION)){
+            iniciarActividadSiguiente();
+        }
+
         volley = VolleyRP.getInstance(this);
         mRequest = volley.getRequestQueue();
 
@@ -49,11 +59,35 @@ public class Login extends AppCompatActivity {
         eTcontraseña = (EditText) findViewById(R.id.eTcontraseña);
 
         bTingresar = (Button) findViewById(R.id.bTingresar);
+        registro = (Button) findViewById(R.id.registrar);
 
         bTingresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 VerificarLogin(eTusuario.getText().toString().toLowerCase(),eTcontraseña.getText().toString().toLowerCase());
+            }
+        });
+
+        registro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Login.this,Registro.class);
+                startActivity(i);
+            }
+        });
+
+        RBsesion = (RadioButton) findViewById(R.id.RBSecion);
+
+        isActivateRadioButton = RBsesion.isChecked(); //DESACTIVADO
+
+        RBsesion.setOnClickListener(new View.OnClickListener() {
+            //ACTIVADO
+            @Override
+            public void onClick(View v) {
+                if(isActivateRadioButton){
+                    RBsesion.setChecked(false);
+                }
+                isActivateRadioButton = RBsesion.isChecked();
             }
         });
     }
@@ -118,6 +152,8 @@ public class Login extends AppCompatActivity {
         JsonObjectRequest solicitud = new JsonObjectRequest(Request.Method.POST,IP_TOKEN,new JSONObject(hashMapToken), new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject datos) {
+                Preferences.savePreferenceString(Login.this,USER,Preferences.PREFERENCE_USUARIO_LOGIN);
+                Preferences.savePreferenceBoolean(Login.this,RBsesion.isChecked(),Preferences.PREFERENCE_ESTADO_BUTTON_SESION);
                 try {
                     Toast.makeText(Login.this,datos.getString("resultado"),Toast.LENGTH_SHORT).show();
                 } catch (JSONException e){}
@@ -132,6 +168,12 @@ public class Login extends AppCompatActivity {
             }
         });
         VolleyRP.addToQueue(solicitud,mRequest,this,volley);
+    }
+
+    public void iniciarActividadSiguiente(){
+        Intent i = new Intent(Login.this, ActivityUsuarios.class);
+        startActivity(i);
+        finish();
     }
 
 }
