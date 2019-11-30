@@ -37,8 +37,8 @@ public class Login extends AppCompatActivity {
     private VolleyRP volley;
     private RequestQueue mRequest;
 
-    private static final String IP = "https://androidchatpastuso.000webhostapp.com/ArchivosPHP/Login_GETID.php?id=";
-    private static final String IP_TOKEN = "https://androidchatpastuso.000webhostapp.com/ArchivosPHP/Token_INSERTandUPDATE.php";
+    private static final String IP = "http://192.168.0.40/chatPasto/Login_GETID.php?id=";
+    private static final String IP_TOKEN = "http://192.168.0.40/chatPasto/Token_INSERTandUPDATE.php";
 
     private String USER = "";
     private String PASSWORD = "";

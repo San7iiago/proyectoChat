@@ -33,7 +33,7 @@ public class Friends extends AppCompatActivity {
     private VolleyRP volley;
     private RequestQueue mRequest;
 
-    private static final String URL_GET_ALL_USERS = "https://androidchatpastuso.000webhostapp.com/ArchivosPHP/Amigos_GETALL.php";
+    private static final String URL_GET_ALL_USERS = "http://192.168.0.40/chatPasto/Amigos_GETALL.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

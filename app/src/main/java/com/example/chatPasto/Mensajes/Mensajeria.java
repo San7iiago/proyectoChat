@@ -48,7 +48,7 @@ public class Mensajeria extends AppCompatActivity {
     private String EMISOR = "";
     private String RECEPTOR;
 
-    private static final String IP_MENSAJE = "https://androidchatpastuso.000webhostapp.com/ArchivosPHP/Enviar_Mensajes.php";
+    private static final String IP_MENSAJE = "http://192.168.0.40/chatPasto/Enviar_Mensajes.php";
 
     private VolleyRP volley;
     private RequestQueue mRequest;

@@ -46,6 +46,8 @@
             android:hint="Usuario"
             android:textColorHint="#2d3436"
             android:textColor="#2d3436"
+            android:maxLines="1"
+            android:inputType="text"
             android:drawableLeft="@drawable/ic_mood_black_24dp" />
 
         <EditText

@@ -17,6 +17,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.chatPasto.Amigos.Friends;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,8 +31,8 @@ import java.util.Locale;
 
 public class Update extends AppCompatActivity {
 
-    private static final String IP_ACTUALIZAR = "https://androidchatpastuso.000webhostapp.com/ArchivosPHP/Actualizar_DATA.php";
-    private static final String IP_OBTENER = "https://androidchatpastuso.000webhostapp.com/ArchivosPHP/Obtener_DATA.php?id=";
+    private static final String IP_ACTUALIZAR = "http://192.168.0.40/chatPasto/Actualizar_DATA.php";
+    private static final String IP_OBTENER = "http://192.168.0.40/chatPasto/Obtener_DATA.php?id=";
 
     private EditText user;
     private EditText password;
@@ -76,20 +77,6 @@ public class Update extends AppCompatActivity {
         System.out.println(ID_USER);
         obtenerDatos();
 
-        rdHombre.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rdMujer.setChecked(false);
-            }
-        });
-
-        rdMujer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rdHombre.setChecked(false);
-            }
-        });
-
         /*Intent intent = this.getIntent();
         Bundle extra = intent.getExtras();*/
 
@@ -101,23 +88,27 @@ public class Update extends AppCompatActivity {
                 finish();
             }
         });
-    }
 
-    public void update(View v){
-        String genero = "";
+        actualizar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        if (rdHombre.isChecked()) genero = "hombre";
-        else if (rdMujer.isChecked()) genero = "mujer";
+                String genero = "";
 
-        actualizarWebService(
-                getStringET(user).trim(),
-                getStringET(password).trim(),
-                getStringET(nombre).trim(),
-                getStringET(apellidos).trim(),
-                getStringET(txtFechaDeNacimiento).trim(),
-                getStringET(correo).trim(),
-                getStringET(telefono).trim(),
-                genero);
+                if (rdHombre.isChecked()) genero = "hombre";
+                else if (rdMujer.isChecked()) genero = "mujer";
+
+                actualizarWebService(
+                        getStringET(user).trim(),
+                        getStringET(password).trim(),
+                        getStringET(nombre).trim(),
+                        getStringET(apellidos).trim(),
+                        getStringET(txtFechaDeNacimiento).trim(),
+                        getStringET(correo).trim(),
+                        getStringET(telefono).trim(),
+                        genero);
+            }
+        });
     }
 
     public void fecha(View view) {
@@ -140,10 +131,10 @@ public class Update extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    private void actualizarWebService(final String usuario, String contraseña, String nombre, String apellido, String fechaNacimiento, String correo, String numero, String genero){
+    private void actualizarWebService(final String usuario, String contrasena, String nombre, String apellido, String fechaNacimiento, String correo, String numero, String genero){
 
         if(!usuario.isEmpty() &&
-                !contraseña.isEmpty() &&
+                !contrasena.isEmpty() &&
                 !nombre.isEmpty() &&
                 !apellido.isEmpty() &&
                 !fechaNacimiento.isEmpty() &&
@@ -159,7 +150,7 @@ public class Update extends AppCompatActivity {
             hashMapToken.put("correo", correo);
             hashMapToken.put("genero", genero);
             hashMapToken.put("telefono", numero);
-            hashMapToken.put("password", contraseña);
+            hashMapToken.put("password", contrasena);
 
             JsonObjectRequest solicitud = new JsonObjectRequest(Request.Method.POST, IP_ACTUALIZAR, new JSONObject(hashMapToken), new Response.Listener<JSONObject>() {
                 @Override
@@ -168,6 +159,8 @@ public class Update extends AppCompatActivity {
                         String estado = datos.getString("resultado");
                         if (estado.equalsIgnoreCase("El usuario se actualizó correctamente")) {
                             Toast.makeText(Update.this, estado, Toast.LENGTH_SHORT).show();
+                            finish();
+                            startActivity(new Intent(Update.this, Friends.class));
                             /*String Token = FirebaseInstanceId.getInstance().getToken();
                             if(Token!=null){
                                 if((""+Token.charAt(0)).equalsIgnoreCase("{")) {
@@ -184,13 +177,15 @@ public class Update extends AppCompatActivity {
                             Toast.makeText(Update.this, estado, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
-                        Toast.makeText(Update.this, "No se pudo actualizar", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Update.this, "No se pudo actualizar. JSONError. "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        System.out.println(e.getMessage());
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(Update.this, "No se pudo actualizar", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Update.this, "No se pudo actualizar. Error response. "+error.getMessage(), Toast.LENGTH_SHORT).show();
+                    System.out.println(error.getMessage());
                 }
             });
             VolleyRP.addToQueue(solicitud, mRequest, this, volley);
@@ -213,7 +208,7 @@ public class Update extends AppCompatActivity {
                     txtFechaDeNacimiento.setText(jsonObject.getString("fecha_de_nacimiento"));
                     correo.setText(jsonObject.getString("correo"));
                     telefono.setText(jsonObject.getString("telefono"));
-                    if(jsonObject.getString("genero") == "hombre"){
+                    if(jsonObject.getString("genero").equals("hombre")){
                         rdHombre.setChecked(true);
                     }else{
                         rdMujer.setChecked(true);

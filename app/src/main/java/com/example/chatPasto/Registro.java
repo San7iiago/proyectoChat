@@ -1,6 +1,7 @@
 package com.example.chatPasto;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.chatPasto.Amigos.Friends;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
@@ -28,7 +30,7 @@ import java.util.Locale;
 
 public class Registro extends AppCompatActivity {
 
-    private static final String IP_REGISTRAR = "https://androidchatpastuso.000webhostapp.com/ArchivosPHP/Registro_INSERT.php";
+    private static final String IP_REGISTRAR = "http://192.168.0.40/chatPasto/Registro_INSERT.php";
 
     private EditText user;
     private EditText password;
@@ -150,6 +152,8 @@ public class Registro extends AppCompatActivity {
                         String estado = datos.getString("resultado");
                         if (estado.equalsIgnoreCase("El usuario se registro correctamente")) {
                             Toast.makeText(Registro.this, estado, Toast.LENGTH_SHORT).show();
+                            finish();
+                            startActivity(new Intent(Registro.this, Login.class));
                             /*String Token = FirebaseInstanceId.getInstance().getToken();
                             if(Token!=null){
                                 if((""+Token.charAt(0)).equalsIgnoreCase("{")) {
