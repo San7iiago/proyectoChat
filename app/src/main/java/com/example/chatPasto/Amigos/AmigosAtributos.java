@@ -1,18 +1,22 @@
 package com.example.chatPasto.Amigos;
 
-public class Amigos {
-    private int fotoPerfil;
-    private String id, nombre, ultimoMensaje, hora;
+public class AmigosAtributos {
+    private int fotoDePerfil;
+    private String nombre;
+    private String ultimoMensaje;
+    private String hora;
+    private String id;
 
-    public Amigos() {
+    public AmigosAtributos(){
+
     }
 
-    public int getFotoPerfil() {
-        return fotoPerfil;
+    public int getFotoDePerfil() {
+        return fotoDePerfil;
     }
 
-    public void setFotoPerfil(int fotoPerfil) {
-        this.fotoPerfil = fotoPerfil;
+    public void setFotoDePerfil(int fotoDePerfil) {
+        this.fotoDePerfil = fotoDePerfil;
     }
 
     public String getNombre() {

@@ -6,19 +6,7 @@
     android:layout_height="match_parent"
     android:padding="10sp">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/appBarLayoutU"
-        android:theme="@style/AppTheme.AppBarOverlay">
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbarU"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:navigationIcon="?attr/homeAsUpIndicator"
-            >
-        </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

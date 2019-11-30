@@ -17,7 +17,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.chatPasto.Amigos.Friends;
+import com.example.chatPasto.Amigos.ActivityAmigos;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,8 +71,6 @@ public class Update extends AppCompatActivity {
         rdHombre = (RadioButton) findViewById(R.id.URDhombre);
         rdMujer = (RadioButton) findViewById(R.id.URDmujer);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarU);
-
         ID_USER = Preferences.obtenerPreferenceString(this, Preferences.PREFERENCE_USUARIO_LOGIN);
         System.out.println(ID_USER);
         obtenerDatos();
@@ -81,13 +79,6 @@ public class Update extends AppCompatActivity {
         Bundle extra = intent.getExtras();*/
 
         actualizar = (Button) findViewById(R.id.buttonActualizar);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
 
         actualizar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,7 +151,7 @@ public class Update extends AppCompatActivity {
                         if (estado.equalsIgnoreCase("El usuario se actualizó correctamente")) {
                             Toast.makeText(Update.this, estado, Toast.LENGTH_SHORT).show();
                             finish();
-                            startActivity(new Intent(Update.this, Friends.class));
+                            startActivity(new Intent(Update.this, ActivityAmigos.class));
                             /*String Token = FirebaseInstanceId.getInstance().getToken();
                             if(Token!=null){
                                 if((""+Token.charAt(0)).equalsIgnoreCase("{")) {

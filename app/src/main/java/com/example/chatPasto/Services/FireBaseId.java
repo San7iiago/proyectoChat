@@ -2,6 +2,10 @@ package com.example.chatPasto.Services;
 
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
+/**
+ * Created by KevinPiazzoli on 09/02/2017.
+ */
+
 public class FireBaseId extends FirebaseInstanceIdService{
 
     @Override

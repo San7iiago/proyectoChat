@@ -14,7 +14,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.chatPasto.Amigos.Friends;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
@@ -22,7 +21,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-
+import com.example.chatPasto.Amigos.ActivityAmigos;
 
 public class Login extends AppCompatActivity {
 
@@ -32,7 +31,6 @@ public class Login extends AppCompatActivity {
     private Button registro;
 
     private RadioButton RBsesion;
-    private boolean isActivateRadioButton;
 
     private VolleyRP volley;
     private RequestQueue mRequest;
@@ -42,6 +40,8 @@ public class Login extends AppCompatActivity {
 
     private String USER = "";
     private String PASSWORD = "";
+
+    private boolean isActivateRadioButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +61,21 @@ public class Login extends AppCompatActivity {
         bTingresar = (Button) findViewById(R.id.bTingresar);
         registro = (Button) findViewById(R.id.registrar);
 
+        RBsesion = (RadioButton) findViewById(R.id.RBSecion);
+
+        isActivateRadioButton = RBsesion.isChecked();
+
+        RBsesion.setOnClickListener(new View.OnClickListener() {
+            //ACTIVADO
+            @Override
+            public void onClick(View v) {
+                if(isActivateRadioButton){
+                    RBsesion.setChecked(false);
+                }
+                isActivateRadioButton = RBsesion.isChecked();
+            }
+        });
+
         bTingresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,21 +88,6 @@ public class Login extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(Login.this,Registro.class);
                 startActivity(i);
-            }
-        });
-
-        RBsesion = (RadioButton) findViewById(R.id.RBSecion);
-
-        isActivateRadioButton = RBsesion.isChecked(); //DESACTIVADO
-
-        RBsesion.setOnClickListener(new View.OnClickListener() {
-            //ACTIVADO
-            @Override
-            public void onClick(View v) {
-                if(isActivateRadioButton){
-                    RBsesion.setChecked(false);
-                }
-                isActivateRadioButton = RBsesion.isChecked();
             }
         });
     }
@@ -107,7 +107,7 @@ public class Login extends AppCompatActivity {
         },new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(Login.this,"Ocurrio un error, por favor contactese con el administrador"+error.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(Login.this,"Ocurrio un error, por favor contactese con el administrador",Toast.LENGTH_SHORT).show();
             }
         });
         VolleyRP.addToQueue(solicitud,mRequest,this,volley);
@@ -122,16 +122,14 @@ public class Login extends AppCompatActivity {
                 String contraseña = Jsondatos.getString("Password");
                 if(usuario.equals(USER) && contraseña.equals(PASSWORD)){
                     String Token =FirebaseInstanceId.getInstance().getToken();
-
                     if(Token!=null){
-                        if ((""+Token.charAt(0)).equalsIgnoreCase("{")){
-                            JSONObject js = new JSONObject(Token);//SOLO SI LES APARECE {"token":"...."}
+                        if((""+Token.charAt(0)).equalsIgnoreCase("{")) {
+                            JSONObject js = new JSONObject(Token);
                             String tokenRecortado = js.getString("token");
                             SubirToken(tokenRecortado);
-                        } else {
+                        }else{
                             SubirToken(Token);
                         }
-
                     }
                     else Toast.makeText(this,"El token es nulo",Toast.LENGTH_SHORT).show();
                 }
@@ -140,7 +138,7 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(this,estado,Toast.LENGTH_SHORT).show();
             }
         } catch (JSONException e) {
-
+            Toast.makeText(this, "El token no se pudo recortar", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -152,8 +150,8 @@ public class Login extends AppCompatActivity {
         JsonObjectRequest solicitud = new JsonObjectRequest(Request.Method.POST,IP_TOKEN,new JSONObject(hashMapToken), new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject datos) {
-                Preferences.savePreferenceString(Login.this,USER,Preferences.PREFERENCE_USUARIO_LOGIN);
                 Preferences.savePreferenceBoolean(Login.this,RBsesion.isChecked(),Preferences.PREFERENCE_ESTADO_BUTTON_SESION);
+                Preferences.savePreferenceString(Login.this,USER,Preferences.PREFERENCE_USUARIO_LOGIN);
                 try {
                     Toast.makeText(Login.this,datos.getString("resultado"),Toast.LENGTH_SHORT).show();
                 } catch (JSONException e){}
@@ -169,7 +167,7 @@ public class Login extends AppCompatActivity {
     }
 
     public void iniciarActividadSiguiente(){
-        Intent i = new Intent(Login.this, Friends.class);
+        Intent i = new Intent(Login.this,ActivityAmigos.class);
         startActivity(i);
         finish();
     }

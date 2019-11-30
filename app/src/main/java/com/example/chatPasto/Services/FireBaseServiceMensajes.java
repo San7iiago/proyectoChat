@@ -18,6 +18,10 @@ import java.util.Random;
 import com.example.chatPasto.Mensajes.Mensajeria;
 import com.example.chatPasto.R;
 
+/**
+ * Created by KevinPiazzoli on 09/02/2017.
+ */
+
 public class FireBaseServiceMensajes extends FirebaseMessagingService {
 
     @Override
@@ -25,21 +29,26 @@ public class FireBaseServiceMensajes extends FirebaseMessagingService {
         super.onMessageReceived(remoteMessage);
         String mensaje = remoteMessage.getData().get("mensaje");
         String hora = remoteMessage.getData().get("hora");
-        String cabezera = remoteMessage.getData().get("cabezera");
-        String cuerpo = remoteMessage.getData().get("cuerpo");
+        String cabezera =  remoteMessage.getData().get("cabezera");
+        String cuerpo =  remoteMessage.getData().get("cuerpo");
         String receptor = remoteMessage.getData().get("receptor");
-        Mensaje(mensaje,hora,receptor);
-        String emisor = Preferences.obtenerPreferenceString(this, Preferences.PREFERENCE_USUARIO_LOGIN);
-        if(emisor.equals(receptor)) {
-            showNotification(cabezera, cuerpo);
+        String emisorPHP = remoteMessage.getData().get("emisor");
+        String emisor = Preferences.obtenerPreferenceString(this,Preferences.PREFERENCE_USUARIO_LOGIN);
+        if(emisor.equals(receptor)){
+            Mensaje(mensaje,hora,emisorPHP);
+            showNotification(cabezera,cuerpo);
         }
     }
 
-    private void Mensaje(String mensaje,String hora,String receptor){
+    public boolean equals(Object obj) {
+        return (getApplication().getClass() == obj);
+    }
+
+    private void Mensaje(String mensaje,String hora,String emisor){
         Intent i = new Intent(Mensajeria.MENSAJE);
         i.putExtra("key_mensaje",mensaje);
         i.putExtra("key_hora",hora);
-        i.putExtra("key_receptor",receptor);
+        i.putExtra("key_emisor_PHP",emisor);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
     }
 
@@ -54,7 +63,7 @@ public class FireBaseServiceMensajes extends FirebaseMessagingService {
         builder.setContentTitle(cabezera);
         builder.setContentText(cuerpo);
         builder.setSound(soundNotification);
-        builder.setSmallIcon(R.drawable.ic_mood_black_24dp);
+        builder.setSmallIcon(R.drawable.ic_action_key);
         builder.setTicker(cuerpo);
         builder.setContentIntent(pendingIntent);
 

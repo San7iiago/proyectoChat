@@ -6,7 +6,7 @@
 			$Respuesta = Registro::ObtenerTodosLosUsuarios();
 			echo json_encode($Respuesta);
 		}catch(PDOException $e){
-			echo "Ocurrio un error, intentelo mas tarde";
+			echo json_encode(array('resultado' => 'Ocurrio un error, intentelo mas tarde'));
 		}
 	}
 

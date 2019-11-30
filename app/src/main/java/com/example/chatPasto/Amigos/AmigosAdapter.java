@@ -2,7 +2,6 @@ package com.example.chatPasto.Amigos;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,31 +10,30 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import com.example.chatPasto.Mensajes.Mensajeria;
 import com.example.chatPasto.R;
 
-import java.util.List;
-
 public class AmigosAdapter extends RecyclerView.Adapter<AmigosAdapter.HolderAmigos> {
 
-    private List<Amigos> atributosList;
+    private List<AmigosAtributos> atributosList;
     private Context context;
 
-    public AmigosAdapter(List<Amigos> atributosList, Context context){
+    public AmigosAdapter(List<AmigosAtributos> atributosList,Context context){
         this.atributosList = atributosList;
         this.context = context;
     }
 
-    @NonNull
     @Override
-    public HolderAmigos onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public HolderAmigos onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view_amigos,parent,false);
         return new AmigosAdapter.HolderAmigos(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HolderAmigos holder, final int position) {
-        holder.imageView.setImageResource(R.drawable.ic_account_circle);
+    public void onBindViewHolder(HolderAmigos holder, final int position) {
+        holder.imageView.setImageResource(atributosList.get(position).getFotoDePerfil());
         holder.nombre.setText(atributosList.get(position).getNombre());
         holder.mensaje.setText(atributosList.get(position).getUltimoMensaje());
         holder.hora.setText(atributosList.get(position).getHora());
@@ -44,10 +42,11 @@ public class AmigosAdapter extends RecyclerView.Adapter<AmigosAdapter.HolderAmig
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(context, Mensajeria.class);
-                i.putExtra("key_receptor", atributosList.get(position).getId());
+                i.putExtra("key_receptor",atributosList.get(position).getId());
                 context.startActivity(i);
             }
         });
+
     }
 
     @Override
@@ -56,19 +55,21 @@ public class AmigosAdapter extends RecyclerView.Adapter<AmigosAdapter.HolderAmig
     }
 
     static class HolderAmigos extends RecyclerView.ViewHolder{
+
         CardView cardView;
         ImageView imageView;
         TextView nombre;
         TextView mensaje;
         TextView hora;
 
-        public HolderAmigos(@NonNull View itemView) {
+        public HolderAmigos(View itemView) {
             super(itemView);
             cardView = (CardView) itemView.findViewById(R.id.cardViewAmigos);
-            imageView = (ImageView) itemView.findViewById(R.id.fotoPerfilAmigo);
-            nombre = (TextView) itemView.findViewById(R.id.nombreAmigo);
-            mensaje = (TextView) itemView.findViewById(R.id.mensajeAmigo);
-            hora = (TextView) itemView.findViewById(R.id.horaMensajeAmigo);
+            imageView = (ImageView) itemView.findViewById(R.id.fotoDePerfilAmigos);
+            nombre = (TextView) itemView.findViewById(R.id.nombreUsuarioAmigo);
+            mensaje = (TextView) itemView.findViewById(R.id.mensajeAmigos);
+            hora = (TextView) itemView.findViewById(R.id.horaAmigos);
         }
     }
+
 }

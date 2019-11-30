@@ -30,16 +30,25 @@
 			}
 		}
 
-		public static function EnviarNotification($Mensaje,$hora,$token){
+		public static function getTokenUser($id){
+			$consultar = "SELECT id,token FROM Token WHERE id = ?";
+			$resultado = Database::getInstance()->getDb()->prepare($consultar);
+			$resultado->execute(array($id));
+			$tabla = $resultado->fetch(PDO::FETCH_ASSOC);
+			return $tabla;
+		}
+
+		public static function EnviarNotification($Mensaje,$hora,$token,$emisor_del_mensaje,$receptor_del_mensaje){
 			ignore_user_abort();
 			ob_start();
 
 			$url = 'https://fcm.googleapis.com/fcm/send';
 
 			$fields = array('to' => $token,
-			'data' => array('mensaje' => $Mensaje,'hora' => $hora));
+			'data' => array('mensaje' => $Mensaje,'hora' => $hora,'cabezera' => $emisor_del_mensaje.' te envio un nuevo mensaje','cuerpo' => $Mensaje,'receptor'=> $receptor_del_mensaje,
+				'emisor' =>$emisor_del_mensaje));
 
-			define('GOOGLE_API_KEY', 'AIzaSyAPIMgYOw6P1BZs892ZJW4Vtahc-i7LXzY');
+			define('GOOGLE_API_KEY', 'AIzaSyAGXF8JtRZ8s74YZxoA0OJLpE3vY0AeebU');
 
 			$headers = array(
 			        'Authorization:key='.GOOGLE_API_KEY,

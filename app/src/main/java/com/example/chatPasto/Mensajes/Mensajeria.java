@@ -28,9 +28,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.example.chatPasto.Preferences;
 import com.example.chatPasto.R;
 import com.example.chatPasto.VolleyRP;
-import com.example.chatPasto.Preferences;
 
 public class Mensajeria extends AppCompatActivity {
 
@@ -60,11 +60,12 @@ public class Mensajeria extends AppCompatActivity {
         mensajeDeTextos = new ArrayList<>();
 
         EMISOR = Preferences.obtenerPreferenceString(this, Preferences.PREFERENCE_USUARIO_LOGIN);
-        Intent extras = getIntent();
-        Bundle bundle = extras.getExtras();
-        if(bundle!=null){
+        Intent i = getIntent();
+        Bundle bundle = i.getExtras();
+        if (bundle != null) {
             RECEPTOR = bundle.getString("key_receptor");
         }
+
         volley = VolleyRP.getInstance(this);
         mRequest = volley.getRequestQueue();
 
@@ -74,7 +75,7 @@ public class Mensajeria extends AppCompatActivity {
 
         rv = (RecyclerView) findViewById(R.id.rvMensajes);
         LinearLayoutManager lm = new LinearLayoutManager(this);
-        lm.setStackFromEnd(true);
+        lm.setStackFromEnd(true);//Mensajeria
         rv.setLayoutManager(lm);
 
         adapter = new MensajeriaAdapter(mensajeDeTextos,this);
@@ -83,7 +84,7 @@ public class Mensajeria extends AppCompatActivity {
         bTEnviarMensaje.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String mensaje = validarCadena(eTEscribirMensaje.getText().toString());
+                String mensaje = eTEscribirMensaje.getText().toString().trim();//"   hola  " => "hola"
                 if(!mensaje.isEmpty() && !RECEPTOR.isEmpty()){
                     MENSAJE_ENVIAR = mensaje;
                     MandarMensaje();
@@ -107,23 +108,14 @@ public class Mensajeria extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 String mensaje = intent.getStringExtra("key_mensaje");
                 String hora = intent.getStringExtra("key_hora");
-                String receptor = intent.getStringExtra("key_receptor");
-                if(receptor.equals(EMISOR)){
-                    CreateMensaje(mensaje,hora,2);
+                String horaParametros[] = hora.split("\\,");
+                String emisor = intent.getStringExtra("key_emisor_PHP");
+                if(emisor.equals(RECEPTOR)){
+                    CreateMensaje(mensaje,horaParametros[0],2);
                 }
             }
         };
 
-    }
-
-    private String validarCadena(String cadena){
-        for (int i=0; i<cadena.length(); i++){
-            if (!(""+cadena.charAt(i)).equals(" ")){
-                return cadena.substring(i,cadena.length());
-            }
-
-        }
-        return "";
     }
 
     private void MandarMensaje(){
