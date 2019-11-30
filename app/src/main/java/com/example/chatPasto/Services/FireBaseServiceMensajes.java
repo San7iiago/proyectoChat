@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.example.chatPasto.Preferences;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -24,16 +25,21 @@ public class FireBaseServiceMensajes extends FirebaseMessagingService {
         super.onMessageReceived(remoteMessage);
         String mensaje = remoteMessage.getData().get("mensaje");
         String hora = remoteMessage.getData().get("hora");
-        String cabezera =  remoteMessage.getData().get("cabezera");
-        String cuerpo =  remoteMessage.getData().get("cuerpo");
-        Mensaje(mensaje,hora);
-        showNotification(cabezera,cuerpo);
+        String cabezera = remoteMessage.getData().get("cabezera");
+        String cuerpo = remoteMessage.getData().get("cuerpo");
+        String receptor = remoteMessage.getData().get("receptor");
+        Mensaje(mensaje,hora,receptor);
+        String emisor = Preferences.obtenerPreferenceString(this, Preferences.PREFERENCE_USUARIO_LOGIN);
+        if(emisor.equals(receptor)) {
+            showNotification(cabezera, cuerpo);
+        }
     }
 
-    private void Mensaje(String mensaje,String hora){
+    private void Mensaje(String mensaje,String hora,String receptor){
         Intent i = new Intent(Mensajeria.MENSAJE);
         i.putExtra("key_mensaje",mensaje);
         i.putExtra("key_hora",hora);
+        i.putExtra("key_receptor",receptor);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
     }
 

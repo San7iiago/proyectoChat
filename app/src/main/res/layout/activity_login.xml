@@ -60,7 +60,7 @@
             />
         <RadioButton
             android:id="@+id/RBSecion"
-            android:hint="No Cerrar Sesión"
+            android:hint="No cerrar sesión"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button

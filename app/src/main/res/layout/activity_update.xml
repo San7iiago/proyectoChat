@@ -1,27 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10sp">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/appBarLayoutU"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbarU"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            >
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Register"
+        android:gravity="center"
+        android:text="Actualizar"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="24sp"
-        android:gravity="center"
-        android:typeface="monospace"/>
+        android:typeface="monospace" />
+
     <EditText
-        android:id="@+id/userRegister"
+        android:id="@+id/uUserRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Usuario"
-        android:textSize="14sp"/>
+        android:textSize="14sp"
+        android:focusable="false"
+        android:enabled="false"/>
 
     <EditText
-        android:id="@+id/passwordRegistro"
+        android:id="@+id/uPasswordRegistro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -30,7 +48,7 @@
         android:textSize="14sp" />
 
     <EditText
-        android:id="@+id/nombreRegistro"
+        android:id="@+id/uNombreRegistro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -39,7 +57,7 @@
         android:textSize="14sp" />
 
     <EditText
-        android:id="@+id/apellidosRegistro"
+        android:id="@+id/uApellidosRegistro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -47,7 +65,7 @@
         android:inputType="textPersonName"
         android:textSize="14sp" />
     <EditText
-        android:id="@+id/actFechaDeNacimiento"
+        android:id="@+id/uFechaDeNacimiento"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -57,7 +75,7 @@
         android:onClick="fecha"
         android:textSize="14sp" />
     <EditText
-        android:id="@+id/correoRegistro"
+        android:id="@+id/uCorreoRegistro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -65,7 +83,7 @@
         android:inputType="textEmailAddress"
         android:textSize="14sp"/>
     <EditText
-        android:id="@+id/telefonoRegistro"
+        android:id="@+id/uTelefonoRegistro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -74,35 +92,35 @@
         android:textSize="14sp"/>
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/uTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Seleccione su género" />
     <RadioGroup
-        android:id="@+id/rgGenero"
+        android:id="@+id/uRgGenero"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <RadioButton
-            android:id="@+id/RDhombre"
+            android:id="@+id/URDhombre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Hombre"
             android:layout_weight="1"
             android:checked="true"/>
         <RadioButton
-            android:id="@+id/RDmujer"
+            android:id="@+id/URDmujer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Mujer"
             android:layout_weight="1"/>
     </RadioGroup>
     <Button
-        android:id="@+id/buttonRegistro"
+        android:id="@+id/buttonActualizar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="SignUp"
-        android:text="Sign Up"
+        android:onClick="update"
+        android:text="Actualizar datos"
         android:textSize="24sp"
         android:background="@color/colorBtnSignIn"/>
 

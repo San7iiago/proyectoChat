@@ -14,7 +14,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.chatPasto.ActividadDeUsuarios.ActivityUsuarios;
+import com.example.chatPasto.Amigos.Friends;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
@@ -22,7 +22,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-import com.example.chatPasto.Mensajes.Mensajeria;
+
 
 public class Login extends AppCompatActivity {
 
@@ -107,7 +107,7 @@ public class Login extends AppCompatActivity {
         },new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(Login.this,"Ocurrio un error, por favor contactese con el administrador",Toast.LENGTH_SHORT).show();
+                Toast.makeText(Login.this,"Ocurrio un error, por favor contactese con el administrador"+error.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
         VolleyRP.addToQueue(solicitud,mRequest,this,volley);
@@ -157,9 +157,7 @@ public class Login extends AppCompatActivity {
                 try {
                     Toast.makeText(Login.this,datos.getString("resultado"),Toast.LENGTH_SHORT).show();
                 } catch (JSONException e){}
-                Intent i = new Intent(Login.this,Mensajeria.class);
-                i.putExtra("key_emisor",USER);
-                startActivity(i);
+                iniciarActividadSiguiente();
             }
         },new Response.ErrorListener(){
             @Override
@@ -171,7 +169,7 @@ public class Login extends AppCompatActivity {
     }
 
     public void iniciarActividadSiguiente(){
-        Intent i = new Intent(Login.this, ActivityUsuarios.class);
+        Intent i = new Intent(Login.this, Friends.class);
         startActivity(i);
         finish();
     }

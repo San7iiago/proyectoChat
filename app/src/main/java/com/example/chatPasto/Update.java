@@ -1,8 +1,10 @@
 package com.example.chatPasto;
 
 import android.app.DatePickerDialog;
-import android.os.Bundle;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -15,8 +17,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,9 +28,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class Registro extends AppCompatActivity {
+public class Update extends AppCompatActivity {
 
-    private static final String IP_REGISTRAR = "https://androidchatpastuso.000webhostapp.com/ArchivosPHP/Registro_INSERT.php";
+    private static final String IP_ACTUALIZAR = "https://androidchatpastuso.000webhostapp.com/ArchivosPHP/Actualizar_DATA.php";
+    private static final String IP_OBTENER = "https://androidchatpastuso.000webhostapp.com/ArchivosPHP/Obtener_DATA.php?id=";
 
     private EditText user;
     private EditText password;
@@ -38,7 +41,7 @@ public class Registro extends AppCompatActivity {
     private long fechaDeNacimiento;
     private EditText correo;
     private EditText telefono;
-    private Button registro;
+    private Button actualizar;
 
     private RadioButton rdHombre;
     private RadioButton rdMujer;
@@ -46,24 +49,32 @@ public class Registro extends AppCompatActivity {
     private VolleyRP volley;
     private RequestQueue mRequest;
 
+    private static String ID_USER;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registro);
+        setContentView(R.layout.activity_update);
 
         volley = VolleyRP.getInstance(this);
         mRequest = volley.getRequestQueue();
 
-        user = (EditText) findViewById(R.id.userRegister);
-        password = (EditText) findViewById(R.id.passwordRegistro);
-        nombre = (EditText) findViewById(R.id.nombreRegistro);
-        apellidos = (EditText) findViewById(R.id.apellidosRegistro);
-        txtFechaDeNacimiento = (EditText) findViewById(R.id.actFechaDeNacimiento);
-        correo = (EditText) findViewById(R.id.correoRegistro);
-        telefono = (EditText) findViewById(R.id.telefonoRegistro);
+        user = (EditText) findViewById(R.id.uUserRegister);
+        password = (EditText) findViewById(R.id.uPasswordRegistro);
+        nombre = (EditText) findViewById(R.id.uNombreRegistro);
+        apellidos = (EditText) findViewById(R.id.uApellidosRegistro);
+        txtFechaDeNacimiento = (EditText) findViewById(R.id.uFechaDeNacimiento);
+        correo = (EditText) findViewById(R.id.uCorreoRegistro);
+        telefono = (EditText) findViewById(R.id.uTelefonoRegistro);
 
-        rdHombre = (RadioButton) findViewById(R.id.RDhombre);
-        rdMujer = (RadioButton) findViewById(R.id.RDmujer);
+        rdHombre = (RadioButton) findViewById(R.id.URDhombre);
+        rdMujer = (RadioButton) findViewById(R.id.URDmujer);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarU);
+
+        ID_USER = Preferences.obtenerPreferenceString(this, Preferences.PREFERENCE_USUARIO_LOGIN);
+        System.out.println(ID_USER);
+        obtenerDatos();
 
         rdHombre.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,33 +90,39 @@ public class Registro extends AppCompatActivity {
             }
         });
 
-        registro = (Button) findViewById(R.id.buttonRegistro);
+        /*Intent intent = this.getIntent();
+        Bundle extra = intent.getExtras();*/
 
-        registro.setOnClickListener(new View.OnClickListener() {
+        actualizar = (Button) findViewById(R.id.buttonActualizar);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-
-                String genero = "";
-
-                if (rdHombre.isChecked()) genero = "hombre";
-                else if (rdMujer.isChecked()) genero = "mujer";
-
-                registrarWebService(
-                        getStringET(user).trim(),
-                        getStringET(password).trim(),
-                        getStringET(nombre).trim(),
-                        getStringET(apellidos).trim(),
-                        getStringET(txtFechaDeNacimiento).trim(),
-                        getStringET(correo).trim(),
-                        getStringET(telefono).trim(),
-                        genero);
+            public void onClick(View view) {
+                finish();
             }
         });
     }
 
+    public void update(View v){
+        String genero = "";
+
+        if (rdHombre.isChecked()) genero = "hombre";
+        else if (rdMujer.isChecked()) genero = "mujer";
+
+        actualizarWebService(
+                getStringET(user).trim(),
+                getStringET(password).trim(),
+                getStringET(nombre).trim(),
+                getStringET(apellidos).trim(),
+                getStringET(txtFechaDeNacimiento).trim(),
+                getStringET(correo).trim(),
+                getStringET(telefono).trim(),
+                genero);
+    }
+
     public void fecha(View view) {
         final Calendar calendar = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = new DatePickerDialog(Registro.this, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(Update.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int mes, int dia) {
                 Calendar calendarResultado = Calendar.getInstance();
@@ -115,6 +132,7 @@ public class Registro extends AppCompatActivity {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                 Date date = calendarResultado.getTime();
                 String fechaDeNacimientoTexto = simpleDateFormat.format(date);
+                System.out.println(fechaDeNacimientoTexto);
                 fechaDeNacimiento = date.getTime();
                 txtFechaDeNacimiento.setText(fechaDeNacimientoTexto);
             }
@@ -122,7 +140,7 @@ public class Registro extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    private void registrarWebService(final String usuario, String contraseña, String nombre, String apellido, String fechaNacimiento, String correo, String numero, String genero){
+    private void actualizarWebService(final String usuario, String contraseña, String nombre, String apellido, String fechaNacimiento, String correo, String numero, String genero){
 
         if(!usuario.isEmpty() &&
                 !contraseña.isEmpty() &&
@@ -131,7 +149,7 @@ public class Registro extends AppCompatActivity {
                 !fechaNacimiento.isEmpty() &&
                 !correo.isEmpty() &&
                 !numero.isEmpty()
-                ) {
+        ) {
 
             HashMap<String, String> hashMapToken = new HashMap<>();
             hashMapToken.put("id", usuario);
@@ -143,13 +161,13 @@ public class Registro extends AppCompatActivity {
             hashMapToken.put("telefono", numero);
             hashMapToken.put("password", contraseña);
 
-            JsonObjectRequest solicitud = new JsonObjectRequest(Request.Method.POST, IP_REGISTRAR, new JSONObject(hashMapToken), new Response.Listener<JSONObject>() {
+            JsonObjectRequest solicitud = new JsonObjectRequest(Request.Method.POST, IP_ACTUALIZAR, new JSONObject(hashMapToken), new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject datos) {
                     try {
                         String estado = datos.getString("resultado");
-                        if (estado.equalsIgnoreCase("El usuario se registro correctamente")) {
-                            Toast.makeText(Registro.this, estado, Toast.LENGTH_SHORT).show();
+                        if (estado.equalsIgnoreCase("El usuario se actualizó correctamente")) {
+                            Toast.makeText(Update.this, estado, Toast.LENGTH_SHORT).show();
                             /*String Token = FirebaseInstanceId.getInstance().getToken();
                             if(Token!=null){
                                 if((""+Token.charAt(0)).equalsIgnoreCase("{")) {
@@ -163,16 +181,16 @@ public class Registro extends AppCompatActivity {
                             else Toast.makeText(Registro.this,"El token es nulo",Toast.LENGTH_SHORT).show();
 */
                         } else {
-                            Toast.makeText(Registro.this, estado, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Update.this, estado, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
-                        Toast.makeText(Registro.this, "No se pudo registrar", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Update.this, "No se pudo actualizar", Toast.LENGTH_SHORT).show();
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(Registro.this, "No se pudo registrar", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Update.this, "No se pudo actualizar", Toast.LENGTH_SHORT).show();
                 }
             });
             VolleyRP.addToQueue(solicitud, mRequest, this, volley);
@@ -181,30 +199,40 @@ public class Registro extends AppCompatActivity {
         }
     }
 
-    /*private void SubirToken(String id,String token){
-        SolicitudesJson s = new SolicitudesJson() {
+    private void obtenerDatos(){
+        JsonObjectRequest solicitud = new JsonObjectRequest(IP_OBTENER+ID_USER,null, new Response.Listener<JSONObject>(){
             @Override
-            public void solicitudCompletada(JSONObject j) {
-                Toast.makeText(Registro.this, "Se registro correctamente", Toast.LENGTH_SHORT).show();
-                finish();
+            public void onResponse(JSONObject datos) {
+                try {
+                    String usuario = datos.getString("datos");
+                    JSONObject jsonObject = new JSONObject(usuario);
+                    user.setText(jsonObject.getString("id"));
+                    password.setText(jsonObject.getString("password"));
+                    nombre.setText(jsonObject.getString("nombre"));
+                    apellidos.setText(jsonObject.getString("apellidos"));
+                    txtFechaDeNacimiento.setText(jsonObject.getString("fecha_de_nacimiento"));
+                    correo.setText(jsonObject.getString("correo"));
+                    telefono.setText(jsonObject.getString("telefono"));
+                    if(jsonObject.getString("genero") == "hombre"){
+                        rdHombre.setChecked(true);
+                    }else{
+                        rdMujer.setChecked(true);
+                    }
+                } catch (JSONException e) {
+                    Toast.makeText(Update.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+                    System.out.println(e.getMessage());
+                }
             }
+        },new Response.ErrorListener(){
             @Override
-            public void solicitudErronea() {
-                Toast.makeText(Registro.this, "No se pudo subir el token", Toast.LENGTH_SHORT).show();
-                finish();
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(Update.this,"Ocurrio un error, por favor contactese con el administrador",Toast.LENGTH_SHORT).show();
             }
-        };
-
-        HashMap<String,String> hashMapToken = new HashMap<>();
-        hashMapToken.put("id",id);
-        hashMapToken.put("token",token);
-
-        s.solicitudJsonPOST(this,SolicitudesJson.IP_TOKEN_UPLOAD,hashMapToken);
-    }*/
-
+        });
+        VolleyRP.addToQueue(solicitud,mRequest,this,volley);
+    }
 
     private String getStringET(EditText e){
         return e.getText().toString();
     }
-
 }

@@ -30,6 +30,7 @@ import java.util.List;
 
 import com.example.chatPasto.R;
 import com.example.chatPasto.VolleyRP;
+import com.example.chatPasto.Preferences;
 
 public class Mensajeria extends AppCompatActivity {
 
@@ -40,7 +41,6 @@ public class Mensajeria extends AppCompatActivity {
     private RecyclerView rv;
     private Button bTEnviarMensaje;
     private EditText eTEscribirMensaje;
-    private EditText eTRECEPTOR;
     private List<MensajeDeTexto> mensajeDeTextos;
     private MensajeriaAdapter adapter;
 
@@ -59,10 +59,11 @@ public class Mensajeria extends AppCompatActivity {
         setContentView(R.layout.mensajeria);
         mensajeDeTextos = new ArrayList<>();
 
+        EMISOR = Preferences.obtenerPreferenceString(this, Preferences.PREFERENCE_USUARIO_LOGIN);
         Intent extras = getIntent();
         Bundle bundle = extras.getExtras();
         if(bundle!=null){
-            EMISOR = bundle.getString("key_emisor");
+            RECEPTOR = bundle.getString("key_receptor");
         }
         volley = VolleyRP.getInstance(this);
         mRequest = volley.getRequestQueue();
@@ -70,7 +71,6 @@ public class Mensajeria extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         bTEnviarMensaje = (Button) findViewById(R.id.bTenviarMensaje);
         eTEscribirMensaje = (EditText) findViewById(R.id.eTEsribirMensaje);
-        eTRECEPTOR = (EditText) findViewById(R.id.receptorET);
 
         rv = (RecyclerView) findViewById(R.id.rvMensajes);
         LinearLayoutManager lm = new LinearLayoutManager(this);
@@ -84,7 +84,6 @@ public class Mensajeria extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String mensaje = validarCadena(eTEscribirMensaje.getText().toString());
-                RECEPTOR = eTRECEPTOR.getText().toString();
                 if(!mensaje.isEmpty() && !RECEPTOR.isEmpty()){
                     MENSAJE_ENVIAR = mensaje;
                     MandarMensaje();
@@ -108,7 +107,10 @@ public class Mensajeria extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 String mensaje = intent.getStringExtra("key_mensaje");
                 String hora = intent.getStringExtra("key_hora");
-                CreateMensaje(mensaje,hora,2);
+                String receptor = intent.getStringExtra("key_receptor");
+                if(receptor.equals(EMISOR)){
+                    CreateMensaje(mensaje,hora,2);
+                }
             }
         };
 
