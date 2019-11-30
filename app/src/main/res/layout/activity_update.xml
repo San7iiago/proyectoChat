@@ -36,7 +36,9 @@
         android:hint="Usuario"
         android:textSize="14sp"
         android:focusable="false"
-        android:enabled="false"/>
+        android:enabled="false"
+        android:maxLines="1"
+        android:inputType="text"/>
 
     <EditText
         android:id="@+id/uPasswordRegistro"
@@ -54,7 +56,8 @@
         android:ems="10"
         android:hint="Nombre"
         android:inputType="textPersonName"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:maxLines="1"/>
 
     <EditText
         android:id="@+id/uApellidosRegistro"
@@ -63,7 +66,8 @@
         android:ems="10"
         android:hint="Apellido"
         android:inputType="textPersonName"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:maxLines="1"/>
     <EditText
         android:id="@+id/uFechaDeNacimiento"
         android:layout_width="match_parent"

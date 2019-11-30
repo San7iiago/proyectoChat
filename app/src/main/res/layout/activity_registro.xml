@@ -18,7 +18,9 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Usuario"
-        android:textSize="14sp"/>
+        android:textSize="14sp"
+        android:maxLines="1"
+        android:inputType="text"/>
 
     <EditText
         android:id="@+id/passwordRegistro"
@@ -36,7 +38,8 @@
         android:ems="10"
         android:hint="Nombre"
         android:inputType="textPersonName"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:maxLines="1"/>
 
     <EditText
         android:id="@+id/apellidosRegistro"
@@ -45,7 +48,8 @@
         android:ems="10"
         android:hint="Apellido"
         android:inputType="textPersonName"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:maxLines="1"/>
     <EditText
         android:id="@+id/actFechaDeNacimiento"
         android:layout_width="match_parent"
